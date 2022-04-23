@@ -76,6 +76,15 @@ app.get("/quotes/:id", async (req, res) => {
   }
 });
 
+app.get("/actors", async (req, res) => {
+  try {
+    const actors = await client.query(`SELECT * FROM actor`)
+    res.status(200).json(actors.rows)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 app.post("/quotes", async (req, res) => {
   const { quote, movie, character, actor, comment } = req.body;
   if (quote && movie && character && actor) {
@@ -202,9 +211,6 @@ app.delete("/quotes/:id", async (req, res) => {
     });
   }
 });
-
-
-
 
 //Start the server on the given port
 const port = process.env.PORT;

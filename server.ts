@@ -36,27 +36,17 @@ app.get("/", (req, res) => {
 
 app.get("/quotes", async (req, res) => {
   try {
-    const quotes = await client.query(`SELECT * FROM quotes`);
+    const quotes = await client.query(`SELECT 
+    quotes.id as"quoteID", 
+    quotes.quote as "quote",
+    quotes.character as "character",
+    actor.name as "actorNAME", 
+    movie.name as "movieNAME",
+    quotes.comment as "comment"
+    FROM quotes
+    JOIN movie ON quotes.movieid = movie.id
+    JOIN actor ON quotes.actorid = actor.id`);
     res.status(200).json(quotes.rows);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-app.get("/alldata/:id", async (req, res) => {
-  try {
-    const id = parseInt(req.params.id);
-    const data = await client.query(
-      `SELECT quotes.id as "quoteID", movie.id as "movieID", actor.id as "actorID", actor.name as "actorNAME", movie.name as "movieNAME"
-      FROM quotes 
-      JOIN actor ON quotes.actorid = actor.id 
-      JOIN movie ON quotes.movieid = movie.id 
-      WHERE quotes.id = $1`,
-      [id]
-    );
-    if (data) {
-      res.status(200).json(data.rows);
-    }
   } catch (error) {
     console.log(error);
   }
